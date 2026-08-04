@@ -1,0 +1,11 @@
+{
+  "wall_clock_fps": 84.1,
+  "wall_clock_ms": 11.89,
+  "inference_only_fps": 104.0,
+  "end_to_end_fps": 86.6,
+  "speed_ms": {
+    "preprocess": 1.44,
+    "inference": 9.62,
+    "postprocess": 0.48
+  }
+}
