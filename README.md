@@ -7,7 +7,6 @@
 - 발표일: 2026.06.08
 - 발표자료: [`presentation/Group7_YOLOE_Presentation.pdf`](./presentation/Group7_YOLOE_Presentation.pdf)
 
-> 이 저장소는 **팀이 직접 작성한 코드·실험 로그·발표자료**를 중심으로 구성되어 있습니다. YOLOE 원 논문의 공식 구현(THU-MIG/yoloe)은 이 재현 실험이 무엇을 기반으로 하는지 이해하기 위한 **설명 보조 자료**로만 [`reference/`](./reference/)에 요약·링크되어 있으며, 원본 코드 전체는 포함하지 않습니다.
 
 <p align="center">
   <img src="./assets/demo_prompt_modes.png" width="100%" alt="YOLOE 텍스트/비전/프롬프트-프리 3가지 모드 비교 데모">
