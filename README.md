@@ -1,11 +1,8 @@
-# YOLOE Reproduction — Group 7
+# YOLOE Reproduction
 
-성균관대학교 DSC3032 딥러닝이미지처리(Deep Learning 1) Final Project.
-**YOLOE: Real-Time Seeing Anything** (Wang et al., ICCV 2025) 논문의 핵심 주장을 제한된 자원(학교 공유 GPU 서버 1장 + Google Colab) 환경에서 재현하고, 그 과정과 결과를 정리한 저장소입니다.
+**YOLOE: Real-Time Seeing Anything** (Wang et al., ICCV 2025) 논문의 핵심 주장을 제한된 자원(공유 GPU 서버 1장 + Google Colab) 환경에서 재현하고, 그 과정과 결과를 정리한 저장소입니다.
 
-- 팀: Group 7 — Kim Jey, Shao Xiaoyue, Hong Seungbum, An Jiwoong
-- 발표일: 2026.06.08
-- 발표자료: [`presentation/Group7_YOLOE_Presentation.pdf`](./presentation/Group7_YOLOE_Presentation.pdf)
+- Contributors: Kim Jey, Shao Xiaoyue, Hong Seungbum, An Jiwoong
 
 
 <p align="center">
@@ -15,17 +12,6 @@
 <p align="center"><sub>YOLOE의 세 가지 프롬프트 모드(텍스트/비전/프롬프트-프리) 비교 — <code>code/table1_zero_shot_eval/table1_YOLOE_v2_demo.ipynb</code> 실행 결과</sub></p>
 
 ---
-
-## 팀 기여 (역할 분담)
-
-4인 팀 프로젝트이며, 각자 맡은 부분은 다음과 같습니다. (peer 평가 점수 등 개인 평가 내용은 비공개로 제외했습니다.)
-
-| 팀원 | 역할 |
-|---|---|
-| **An Jiwoong (AJW)** — 이 레포 관리자 | Table 1 YOLOE 평가 담당. Ultralytics `model.val()`을 그대로 쓰면 논문의 **Fixed AP** 로직이 반영되지 않아 AP가 크게 낮게 나오는 문제를 발견하고, 예측을 JSON으로 dump한 뒤 공식 `lvis.eval.LVISEval`로 직접 재평가해 AP 25.61 도달(§5 참고). RepRTA/SAVPE/LRPC 발표 슬라이드·스크립트 작성. 팀 공유 GitHub 레포 셋업. 중간 보고서·발표자료 초안 작성 및 최종 제출물(코드·로그·슬라이드 수치) 정합성 점검 |
-| **Hong Seungbum** | Table 1 YOLOE 데모, Table 4 Full Fine-tuning(학교 GPU 서버) 수행 — GPU 경쟁·배치 제약 속에서 학습 완료, Full COCO 데이터셋 다운로드/압축 해제 이슈 해결, 팀 일정 관리(Notion) |
-| **Kim Jey** | Table 4 Linear Probing 수행(freeze 레이어 결정), 발표 슬라이드 전체 구성, 로그·결과·슬라이드 간 수치 정합성 검증 |
-| **Shao Xiaoyue (Iris)** | Table 1 YOLO-World 평가, YOLOE(Ultralytics)·YOLO-World(MMDetection) 간 어노테이션 포맷 차이 해결, YOLO-World 체크포인트 다운로드 불안정 이슈 해결 |
 
 ## 1. 문제 정의
 
@@ -41,7 +27,7 @@ YOLOE는 **텍스트 / 비전 / 프롬프트-프리** 세 가지 프롬프트 �
 | **SAVPE** (Semantic-Activated Visual Prompt Encoder) | 비전(박스/포인트) | Activation branch(프롬프트에 따라 달라지는 가중치)와 Semantic branch(프롬프트와 무관한 특징)를 분리해 집계, 적은 연산으로 비전 프롬프트 임베딩 생성 |
 | **LRPC** (Lazy Region-Prompt Contrast) | 프롬프트-프리 | 대형 언어모델 없이, 내재된 대규모 vocabulary와 특화 임베딩으로 앵커를 먼저 필터링한 뒤 카테고리를 매칭 |
 
-자세한 구조는 [`reference/README.md`](./reference/README.md)와 발표자료 5~9쪽을 참고하세요.
+자세한 구조는 [`reference/README.md`](./reference/README.md)를 참고하세요.
 
 ## 3. 재현 실험 설계
 
@@ -54,7 +40,7 @@ YOLOE는 **텍스트 / 비전 / 프롬프트-프리** 세 가지 프롬프트 �
 
 ### 논문 vs 재현 환경(리소스 제약)
 
-Table 1(제로샷 평가)과 Table 4(파인튜닝)는 실행 환경이 다릅니다 — 전자는 Google Colab, 후자는 학교 공유 GPU 서버에서 진행했습니다.
+Table 1(제로샷 평가)과 Table 4(파인튜닝)는 실행 환경이 다릅니다 — 전자는 Google Colab, 후자는 공유 GPU 서버에서 진행했습니다.
 
 | 항목 | Paper | Ours |
 |---|---|---|
@@ -64,7 +50,7 @@ Table 1(제로샷 평가)과 Table 4(파인튜닝)는 실행 환경이 다릅니
 | **[Table 4]** 학습셋 | Full COCO | 동일 |
 | **[Table 4]** LP / Full FT epoch | 10 / 160 | 10 / ~104(→160 재시도) |
 | **[Table 4]** Batch size | 128 | 64(LP) / 16(FT), nbs=128 |
-| **[Table 4]** 실행 환경 | 8x RTX 4090 | 1x RTX 4090 (SKKU 서버) |
+| **[Table 4]** 실행 환경 | 8x RTX 4090 | 1x RTX 4090 (공유 서버) |
 
 GPU 8대 vs 1대, 배치·epoch 축소 등의 자원 제약으로 절대적인 AP 수치 차이는 예상된 결과이며, **재현의 초점은 논문이 보고한 경향성(directional trend)이 실제로 재현되는지**에 있습니다.
 
@@ -98,13 +84,13 @@ GPU 8대 vs 1대, 배치·epoch 축소 등의 자원 제약으로 절대적인 A
 
 ## 5. 재현 과정에서 겪은 문제와 해결
 
-| 문제 | 해결 | 담당 |
-|---|---|---|
-| Ultralytics `model.val()`이 논문의 LVIS Fixed AP 로직을 반영하지 않아 YOLOE 평가 AP가 크게 낮게 나옴 | 예측을 JSON으로 dump 후 공식 `lvis.eval.LVISEval`로 재평가 → AP 25.61 재현 | AJW |
-| YOLOE(Ultralytics)와 YOLO-World(MMDetection) 간 어노테이션 포맷 불일치 | `lvis_v1_minival.json`에 필요한 `file_name` 필드 추가 | Shao Xiaoyue |
-| Ultralytics의 YOLO-World 래퍼로 평가 시 AP 12.32로 논문 대비 크게 저조 | YOLO-World 공식 `tools/test.py`로 재평가 → AP 22.70 재현 | Shao Xiaoyue |
-| 자원 제약으로 배치/epoch/데이터셋 축소 시 FT 성능 저하 | GPU 여유가 생기는 시점에 배치·epoch·Full COCO로 스케일업해 AP 개선 확인 | Hong Seungbum |
-| 데이터셋 심볼릭 링크 깨짐 → 빈 라벨 캐시로 인한 오해성 학습 오류 | `readlink`로 심볼릭 링크 검증, 절대경로로 재생성, 캐시 삭제 후 재생성 | Hong Seungbum |
+| 문제 | 해결 |
+|---|---|
+| Ultralytics `model.val()`이 논문의 LVIS Fixed AP 로직을 반영하지 않아 YOLOE 평가 AP가 크게 낮게 나옴 | 예측을 JSON으로 dump 후 공식 `lvis.eval.LVISEval`로 재평가 → AP 25.61 재현 |
+| YOLOE(Ultralytics)와 YOLO-World(MMDetection) 간 어노테이션 포맷 불일치 | `lvis_v1_minival.json`에 필요한 `file_name` 필드 추가 |
+| Ultralytics의 YOLO-World 래퍼로 평가 시 AP 12.32로 논문 대비 크게 저조 | YOLO-World 공식 `tools/test.py`로 재평가 → AP 22.70 재현 |
+| 자원 제약으로 배치/epoch/데이터셋 축소 시 FT 성능 저하 | GPU 여유가 생기는 시점에 배치·epoch·Full COCO로 스케일업해 AP 개선 확인 |
+| 데이터셋 심볼릭 링크 깨짐 → 빈 라벨 캐시로 인한 오해성 학습 오류 | `readlink`로 심볼릭 링크 검증, 절대경로로 재생성, 캐시 삭제 후 재생성 |
 
 ## 6. 한계
 
@@ -118,7 +104,6 @@ GPU 8대 vs 1대, 배치·epoch 축소 등의 자원 제약으로 절대적인 A
 
 ```
 ├── assets/                        README용 데모 이미지
-├── presentation/                  팀 발표자료 (PDF)
 ├── code/
 │   ├── table1_zero_shot_eval/     LVIS minival 제로샷 평가 노트북 (YOLOE, YOLO-World v1/v2)
 │   └── table4_coco_finetune/      COCO 데이터 준비 → LP/FT 학습 → LP/FT 평가 스크립트
@@ -130,15 +115,15 @@ GPU 8대 vs 1대, 배치·epoch 축소 등의 자원 제약으로 절대적인 A
 
 | 노트북 | 설명 | 바로 열기 |
 |---|---|---|
-| `table1_YOLOE_v2_demo.ipynb` | 공식 YOLOE 레포로 LVIS minival Fixed AP 계산, PyTorch FPS 측정, 텍스트/비전/프롬프트-프리 3가지 모드 데모 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ajw522725/yoloe-reproduction-group7/blob/main/code/table1_zero_shot_eval/table1_YOLOE_v2_demo.ipynb) |
-| `table1_YOLOWorld_v1_AP.ipynb` | YOLO-World-v2-S LVIS minival AP 재현(공식 `tools/test.py` 경로) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ajw522725/yoloe-reproduction-group7/blob/main/code/table1_zero_shot_eval/table1_YOLOWorld_v1_AP.ipynb) |
-| `table1_YOLOWorld_v2_FPSonly.ipynb` | YOLO-World FPS 단독 측정 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ajw522725/yoloe-reproduction-group7/blob/main/code/table1_zero_shot_eval/table1_YOLOWorld_v2_FPSonly.ipynb) |
+| `table1_YOLOE_v2_demo.ipynb` | 공식 YOLOE 레포로 LVIS minival Fixed AP 계산, PyTorch FPS 측정, 텍스트/비전/프롬프트-프리 3가지 모드 데모 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ajw522725/yoloe-reproduction/blob/main/code/table1_zero_shot_eval/table1_YOLOE_v2_demo.ipynb) |
+| `table1_YOLOWorld_v1_AP.ipynb` | YOLO-World-v2-S LVIS minival AP 재현(공식 `tools/test.py` 경로) | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ajw522725/yoloe-reproduction/blob/main/code/table1_zero_shot_eval/table1_YOLOWorld_v1_AP.ipynb) |
+| `table1_YOLOWorld_v2_FPSonly.ipynb` | YOLO-World FPS 단독 측정 | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ajw522725/yoloe-reproduction/blob/main/code/table1_zero_shot_eval/table1_YOLOWorld_v2_FPSonly.ipynb) |
 
-노트북 셀 안의 `# Own Code`로 표시된 부분이 팀이 직접 작성한 코드이며, 그 외 셀은 공식 레포 설치·체크포인트 다운로드 등 실행 환경 구성입니다.
+노트북 셀 안의 `# Own Code`로 표시된 부분이 직접 작성한 코드이며, 그 외 셀은 공식 레포 설치·체크포인트 다운로드 등 실행 환경 구성입니다.
 
-### `code/table4_coco_finetune/` — 학교 GPU 서버(1x RTX 4090)에서 실행
+### `code/table4_coco_finetune/` — 공유 GPU 서버(1x RTX 4090)에서 실행
 
-1. `01_prepare_dataset.py` — COCO annotation → YOLO detection/segmentation 라벨 및 dataset YAML 변환 (팀이 직접 작성)
+1. `01_prepare_dataset.py` — COCO annotation → YOLO detection/segmentation 라벨 및 dataset YAML 변환 (직접 작성)
 2. `02_train_lp.py` / `03_train_ft.py` — Linear Probing / Full Fine-tuning 학습 (Ultralytics `YOLOE` 래퍼 호출)
 3. `04_val_lp.py` / `05_val_ft.py` — 각 체크포인트 검증(Box/Mask AP)
 
@@ -156,7 +141,7 @@ python "01_prepare_dataset.py" \
   --copy_mode symlink
 ```
 
-> 스크립트 내 경로(`/home/gaya7/dsc3032-gaya-shared/...`)는 학교 공유 GPU 서버 기준이며, 재현 시 본인 환경에 맞게 수정이 필요합니다.
+> 스크립트 내 경로(`/home/gaya7/dsc3032-gaya-shared/...`)는 공유 GPU 서버 기준이며, 재현 시 본인 환경에 맞게 수정이 필요합니다.
 
 ## 8. 참고
 
